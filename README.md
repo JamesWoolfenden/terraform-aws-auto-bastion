@@ -16,8 +16,8 @@ Include this repository as a module in your existing terraform code:
 
 ```hcl
 module "auto-bastion" {
-  source            = "JamesWoolfenden/ssm-bastion/aws"
-  version           = "0.0.2"
+  source            = "JamesWoolfenden/auto-bastion/aws"
+  version           = "0.0.4"
   allowed_ips       = [chomp(data.http.myip.body)]
   common_tags       = var.common_tags
   vpc_id            = element(data.aws_vpcs.vpc.ids, 0)
@@ -55,13 +55,13 @@ module "auto-bastion" {
 
 **Got a question?**
 
-File a GitHub [issue](https://github.com/JamesWoolfenden/terraform-ssm-bastion/issues).
+File a GitHub [issue](https://github.com/JamesWoolfenden/terraform-auto-bastion/issues).
 
 ## Contributing
 
 ### Bug Reports & Feature Requests
 
-Please use the [issue tracker](https://github.com/JamesWoolfenden/terraform-ssm-bastion/issues) to report any bugs or file feature requests.
+Please use the [issue tracker](https://github.com/JamesWoolfenden/terraform-auto-bastion/issues) to report any bugs or file feature requests.
 
 ## Copyrights
 
@@ -103,8 +103,8 @@ under the License.
 [linkedin]: https://www.linkedin.com/company/slalom-consulting/
 [twitter]: https://twitter.com/Slalom
 
-[share_twitter]: https://twitter.com/intent/tweet/?text=Build+Harness&url=https://github.com/JamesWoolfenden/terraform-ssm-bastion
-[share_linkedin]: https://www.linkedin.com/shareArticle?mini=true&title=Build+Harness&url=https://github.com/JamesWoolfenden/terraform-ssm-bastion
-[share_reddit]: https://reddit.com/submit/?url=https://github.com/JamesWoolfenden/terraform-ssm-bastion
-[share_facebook]: https://facebook.com/sharer/sharer.php?u=https://github.com/JamesWoolfenden/terraform-ssm-bastion
-[share_email]: mailto:?subject=Build+Harness&body=https://github.com/JamesWoolfenden/terraform-ssm-bastion
+[share_twitter]: https://twitter.com/intent/tweet/?text=Build+Harness&url=https://github.com/JamesWoolfenden/terraform-auto-bastion
+[share_linkedin]: https://www.linkedin.com/shareArticle?mini=true&title=Build+Harness&url=https://github.com/JamesWoolfenden/terraform-auto-bastion
+[share_reddit]: https://reddit.com/submit/?url=https://github.com/JamesWoolfenden/terraform-auto-bastion
+[share_facebook]: https://facebook.com/sharer/sharer.php?u=https://github.com/JamesWoolfenden/terraform-auto-bastion
+[share_email]: mailto:?subject=terraform-auto-bastion&body=https://github.com/JamesWoolfenden/terraform-auto-bastion
