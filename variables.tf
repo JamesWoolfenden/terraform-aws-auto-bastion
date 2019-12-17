@@ -4,13 +4,13 @@ variable "vpc_id" {
 }
 
 variable "instance_type" {
-  type = string
-
+  description = "The EC2 instance type"
+  type        = string
+  default     = "t2.micro"
 }
 
 variable "ssm_standard_role" {
   type = string
-
 }
 
 variable "subnet_ids" {
@@ -19,8 +19,8 @@ variable "subnet_ids" {
 }
 
 variable "allowed_ips" {
-  type = list
-
+  description = "Allow this IP through the firewall"
+  type        = string
 }
 
 variable "common_tags" {

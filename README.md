@@ -34,11 +34,11 @@ module "auto-bastion" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| allowed\_ips |  | list | n/a | yes |
+| allowed\_ips | Allow this IP through the firewall | string | n/a | yes |
 | asg | All the Settings of an Auto Scaling Group | map | `{ "max_size": 1, "min_size": 1, "name": "terraform-asg-bastion" }` | no |
 | common\_tags | Implements the common tags scheme | map | n/a | yes |
 | environment | The environment name | string | n/a | yes |
-| instance\_type |  | string | n/a | yes |
+| instance\_type | The EC2 instance type | string | `"t2.micro"` | no |
 | name | Name of the ec2 instance | string | n/a | yes |
 | ssm\_standard\_role |  | string | n/a | yes |
 | subnet\_ids | A list of Subnet IDs | list | n/a | yes |
