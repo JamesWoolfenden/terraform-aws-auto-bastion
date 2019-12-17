@@ -1,6 +1,6 @@
 [![Slalom][logo]](https://slalom.com)
 
-# terraform-aws-ssm-bastion [![Build Status](https://travis-ci.com/JamesWoolfenden/terraform-aws-ssm-bastion.svg?branch=master)](https://travis-ci.com/JamesWoolfenden/terraform-aws-ssm-bastion) [![Latest Release](https://img.shields.io/github/release/JamesWoolfenden/terraform-aws-ssm-bastion.svg)](https://github.com/JamesWoolfenden/terraform-aws-ssm-bastion/releases/latest)
+# terraform-aws-auto-bastion [![Build Status](https://github.com/JamesWoolfenden/terraform-aws-auto-bastion/workflows/Verify%20and%20Bump/badge.svg?branch=master)](https://github.com/JamesWoolfenden/terraform-aws-auto-bastion) [![Latest Release](https://img.shields.io/github/release/JamesWoolfenden/terraform-aws-auto-bastion.svg)](https://github.com/JamesWoolfenden/terraform-aws-auto-bastion/releases/latest)
 
 ---
 
@@ -8,22 +8,22 @@ It's 100% Open Source and licensed under the [APACHE2](LICENSE).
 
 ## Introduction
 
-For bastions, store ssh key in SSM.
+For bastions, store ssh key in SSM, with the bastion behind and autoscaling group.
 
 ## Usage
 
 Include this repository as a module in your existing terraform code:
 
 ```hcl
-module "ssm-bastion" {
+module "auto-bastion" {
   source            = "JamesWoolfenden/ssm-bastion/aws"
-  version           = "0.1.11"
-  allowed_ips       = chomp(data.http.myip.body)
+  version           = "0.0.2"
+  allowed_ips       = [chomp(data.http.myip.body)]
   common_tags       = var.common_tags
   vpc_id            = element(data.aws_vpcs.vpc.ids, 0)
   instance_type     = var.instance_type
   ssm_standard_role = var.ssm_standard_role
-  subnet_id         = element(data.aws_subnet_ids.subnets.ids, 0)
+  subnet_ids        = element(data.aws_subnet_ids.subnets.ids, 0)
   environment       = var.environment
   name              = var.name
 }
@@ -34,14 +34,15 @@ module "ssm-bastion" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| allowed\_ips |  | string | n/a | yes |
+| allowed\_ips |  | list | n/a | yes |
+| asg | All the Settings of an Auto Scaling Group | map | `{ "max_size": 1, "min_size": 1, "name": "terraform-asg-bastion" }` | no |
 | common\_tags | Implements the common tags scheme | map | n/a | yes |
 | environment | The environment name | string | n/a | yes |
 | instance\_type |  | string | n/a | yes |
 | name | Name of the ec2 instance | string | n/a | yes |
 | ssm\_standard\_role |  | string | n/a | yes |
-| subnet\_id |  | string | n/a | yes |
-| vpc\_id |  | string | n/a | yes |
+| subnet\_ids | A list of Subnet IDs | list | n/a | yes |
+| vpc\_id | The ID of the VPC being used | string | n/a | yes |
 
 ## Outputs
 

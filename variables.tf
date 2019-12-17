@@ -39,10 +39,10 @@ variable "name" {
 }
 
 variable "asg" {
-  description="All the Settings of an Auto Scaling Group"
-  default={
-    min_size=1
-    max_size=1
-    name="terraform-asg-bastion"
+  description = "All the Settings of an Auto Scaling Group"
+  default = {
+    min_size = 1
+    max_size = 1
+    name     = "terraform-asg-bastion"
   }
 }

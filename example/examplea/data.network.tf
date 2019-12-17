@@ -13,15 +13,15 @@ data "http" "myip" {
 }
 
 variable "subnet_tag" {
-  type=map
-default={
-   Name = "awwe-subn-devtest-h-web-001-1b"
-} 
+  type = map
+  default = {
+    Name = "awwe-subn-devtest-h-web-001-1b"
+  }
 }
 
 variable "vpc_tag" {
-  type=map
-  default={
+  type = map
+  default = {
     Environment = "Dev/Test"
     Name        = "awwe-vpc-devtest-h-001"
   }
