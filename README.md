@@ -18,7 +18,7 @@ ssh-keygen -t rsa -f mynew_key
 
 aws ec2-instance-connect send-ssh-public-key --region eu-west-1 --instance-id i-0e2f05807e67f0179 --availability-zone eu-west-1a --instance-os-user ec2-user --ssh-public-key file://mynew_key.pub
 
-ssh -i mynew_key ec2-user@ec2-63-32-54-94.eu-west-1.compute.amazonaws.co
+ssh -i mynew_key ec2-user@ec2-63-32-54-94.eu-west-1.compute.amazonaws.com
 ```
 
 And you're in!
