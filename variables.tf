@@ -10,8 +10,8 @@ variable "instance_type" {
 }
 
 variable "ssm_standard_role" {
-  type = string
-  default="arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
+  type    = string
+  default = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
 }
 
 variable "subnet_ids" {
@@ -44,18 +44,16 @@ variable "asg" {
 }
 
 variable "users" {
-  description="List of users to add the ssh users group"
-  type=list
-  default=["jameswoolfenden"]
+  description = "List of users to add the ssh users group"
+  type        = list
+  default     = ["jameswoolfenden"]
 }
 
 variable "region" {
-  type=string
-  default="eu-west-1"
+  type    = string
+  default = "eu-west-1"
 }
 
 variable "account_id" {
-  type=string
+  type = string
 }
-
-

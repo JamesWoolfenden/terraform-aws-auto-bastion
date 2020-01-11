@@ -1,5 +1,5 @@
 resource "aws_iam_group" "ssh" {
-    name="ssh-users"
+  name = "ssh-users"
 }
 
 resource "aws_iam_group_policy" "ssh_policy" {

@@ -46,14 +46,16 @@ module "auto-bastion" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
+| account\_id |  | string | n/a | yes |
 | allowed\_ips | Allow this IP through the firewall | string | n/a | yes |
 | asg | All the Settings of an Auto Scaling Group | map | `{ "max_size": 1, "min_size": 1, "name": "terraform-asg-bastion" }` | no |
 | common\_tags | Implements the common tags scheme | map | n/a | yes |
-| environment | The environment name | string | n/a | yes |
 | instance\_type | The EC2 instance type | string | `"t2.micro"` | no |
 | name | Name of the ec2 instance | string | n/a | yes |
-| ssm\_standard\_role |  | string | n/a | yes |
+| region |  | string | `"eu-west-1"` | no |
+| ssm\_standard\_role |  | string | `"arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"` | no |
 | subnet\_ids | A list of Subnet IDs | list | n/a | yes |
+| users | List of users to add the ssh users group | list | `[ "jameswoolfenden" ]` | no |
 | vpc\_id | The ID of the VPC being used | string | n/a | yes |
 
 ## Outputs
