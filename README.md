@@ -8,7 +8,20 @@ It's 100% Open Source and licensed under the [APACHE2](LICENSE).
 
 ## Introduction
 
-For bastions, store ssh key in SSM, with the bastion behind and autoscaling group.
+For Bastions, store ssh key in SSM, with the bastion behind and auto-scaling group.
+This bastion now supports Dynamic SSH keys <https://aws.amazon.com/blogs/compute/new-using-amazon-ec2-instance-connect-for-ssh-access-to-your-ec2-instances/>
+
+This means that access to ssh is controlled IAM. Once you have provisioned and add your users to the ssh users group:
+
+```bash
+ssh-keygen -t rsa -f mynew_key
+
+aws ec2-instance-connect send-ssh-public-key --region eu-west-1 --instance-id i-0e2f05807e67f0179 --availability-zone eu-west-1a --instance-os-user ec2-user --ssh-public-key file://mynew_key.pub
+
+ssh -i mynew_key ec2-user@ec2-63-32-54-94.eu-west-1.compute.amazonaws.co
+```
+
+And you're in!
 
 ## Usage
 
@@ -24,7 +37,6 @@ module "auto-bastion" {
   instance_type     = var.instance_type
   ssm_standard_role = var.ssm_standard_role
   subnet_ids        = element(data.aws_subnet_ids.subnets.ids, 0)
-  environment       = var.environment
   name              = var.name
 }
 ```

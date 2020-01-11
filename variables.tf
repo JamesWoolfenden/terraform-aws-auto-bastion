@@ -11,6 +11,7 @@ variable "instance_type" {
 
 variable "ssm_standard_role" {
   type = string
+  default="arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
 }
 
 variable "subnet_ids" {
@@ -28,11 +29,6 @@ variable "common_tags" {
   description = "Implements the common tags scheme"
 }
 
-variable "environment" {
-  type        = string
-  description = "The environment name"
-}
-
 variable "name" {
   type        = string
   description = "Name of the ec2 instance"
@@ -46,3 +42,20 @@ variable "asg" {
     name     = "terraform-asg-bastion"
   }
 }
+
+variable "users" {
+  description="List of users to add the ssh users group"
+  type=list
+  default=["jameswoolfenden"]
+}
+
+variable "region" {
+  type=string
+  default="eu-west-1"
+}
+
+variable "account_id" {
+  type=string
+}
+
+
