@@ -1,10 +1,12 @@
 resource "aws_iam_group" "ssh" {
-  name = "ssh-users"
+  count = var.enablesshgroup
+  name  = "ssh-users"
 }
 
 resource "aws_iam_group_policy" "ssh_policy" {
+  count = var.enablesshgroup
   name  = "ssh_policy_${var.region}"
-  group = aws_iam_group.ssh.id
+  group = aws_iam_group.ssh[0].id
 
   policy = <<EOF
 {
@@ -30,9 +32,16 @@ EOF
 }
 
 resource "aws_iam_group_membership" "ssh" {
-  name = "ssh-group-membership"
+  count = var.enablesshgroup
+  name  = "ssh-group-membership"
 
   users = var.users
 
-  group = aws_iam_group.ssh.name
+  group = aws_iam_group.ssh[0].name
+}
+
+variable "enablesshgroup" {
+  type        = number
+  description = "Swithch to enable ssh group"
+  default     = 1
 }

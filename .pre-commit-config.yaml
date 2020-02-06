@@ -1,6 +1,7 @@
+---
 repos:
 -   repo: git://github.com/pre-commit/pre-commit-hooks
-    rev: v2.4.0
+    rev: v2.5.0
     hooks:
     -   id: check-json
     -   id: check-merge-conflict
@@ -22,10 +23,7 @@ repos:
   hooks:
   - id: terraform_fmt
 - repo: git://github.com/pre-commit/pre-commit-hooks
-  rev: v2.4.0
-  stages:
-  - commit
-  - push
+  rev: v2.5.0
   hooks:
   -   id: detect-aws-credentials
   -   id: detect-private-key
@@ -38,6 +36,11 @@ repos:
   hooks:
   - id: markdownlint
 - repo: git://github.com/antonbabenko/pre-commit-terraform
-  rev: v1.21.0
+  rev: v1.25.0
   hooks:
   - id: terraform_docs
+- repo: git://github.com/bridgecrewio/checkov
+  rev: 1.0.167
+  hooks:
+  - id: checkov
+    files: \.tf$

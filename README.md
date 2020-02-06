@@ -42,27 +42,34 @@ module "auto-bastion" {
 ```
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+## Providers
+
+| Name | Version |
+|------|---------|
+| aws | n/a |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| account\_id |  | string | n/a | yes |
-| allowed\_ips | Allow this IP through the firewall | string | n/a | yes |
-| asg | All the Settings of an Auto Scaling Group | map | `{ "max_size": 1, "min_size": 1, "name": "terraform-asg-bastion" }` | no |
-| common\_tags | Implements the common tags scheme | map | n/a | yes |
-| instance\_type | The EC2 instance type | string | `"t2.micro"` | no |
-| name | Name of the ec2 instance | string | n/a | yes |
-| region |  | string | `"eu-west-1"` | no |
-| ssm\_standard\_role |  | string | `"arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"` | no |
-| subnet\_ids | A list of Subnet IDs | list | n/a | yes |
-| users | List of users to add the ssh users group | list | `[ "jameswoolfenden" ]` | no |
-| vpc\_id | The ID of the VPC being used | string | n/a | yes |
+|------|-------------|------|---------|:-----:|
+| account\_id | n/a | `string` | n/a | yes |
+| allowed\_ips | Allow this IP through the firewall | `string` | n/a | yes |
+| asg | All the Settings of an Auto Scaling Group | `map` | <pre>{<br>  "max_size": 1,<br>  "min_size": 1,<br>  "name": "terraform-asg-bastion"<br>}<br></pre> | no |
+| common\_tags | Implements the common tags scheme | `map` | n/a | yes |
+| enablesshgroup | Swithch to enable ssh group | `number` | `1` | no |
+| instance\_type | The EC2 instance type | `string` | `"t2.micro"` | no |
+| name | Name of the ec2 instance | `string` | n/a | yes |
+| region | n/a | `string` | `"eu-west-1"` | no |
+| ssm\_standard\_role | n/a | `string` | `"arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"` | no |
+| subnet\_ids | A list of Subnet IDs | `list` | n/a | yes |
+| users | List of users to add the ssh users group | `list` | <pre>[<br>  "jameswoolfenden"<br>]<br></pre> | no |
+| vpc\_id | The ID of the VPC being used | `string` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| bastion |  |
+| bastion | n/a |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Help
@@ -79,7 +86,7 @@ Please use the [issue tracker](https://github.com/JamesWoolfenden/terraform-auto
 
 ## Copyrights
 
-Copyright © 2019-2019 [Slalom, LLC](https://slalom.com)
+Copyright © 2019-2020 [Slalom, LLC](https://slalom.com)
 
 ## License
 
@@ -117,8 +124,8 @@ under the License.
 [linkedin]: https://www.linkedin.com/company/slalom-consulting/
 [twitter]: https://twitter.com/Slalom
 
-[share_twitter]: https://twitter.com/intent/tweet/?text=Build+Harness&url=https://github.com/JamesWoolfenden/terraform-auto-bastion
-[share_linkedin]: https://www.linkedin.com/shareArticle?mini=true&title=Build+Harness&url=https://github.com/JamesWoolfenden/terraform-auto-bastion
+[share_twitter]: https://twitter.com/intent/tweet/?text=terraform-auto-bastion&url=https://github.com/JamesWoolfenden/terraform-auto-bastion
+[share_linkedin]: https://www.linkedin.com/shareArticle?mini=true&title=terraform-auto-bastion&url=https://github.com/JamesWoolfenden/terraform-auto-bastion
 [share_reddit]: https://reddit.com/submit/?url=https://github.com/JamesWoolfenden/terraform-auto-bastion
 [share_facebook]: https://facebook.com/sharer/sharer.php?u=https://github.com/JamesWoolfenden/terraform-auto-bastion
 [share_email]: mailto:?subject=terraform-auto-bastion&body=https://github.com/JamesWoolfenden/terraform-auto-bastion
