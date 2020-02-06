@@ -10,8 +10,9 @@ variable "instance_type" {
 }
 
 variable "ssm_standard_role" {
-  type    = string
-  default = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
+  description = "The IAM role to add to the instance profile, the default enables SSM"
+  type        = string
+  default     = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
 }
 
 variable "subnet_ids" {
@@ -44,16 +45,24 @@ variable "asg" {
 }
 
 variable "users" {
-  description = "List of users to add the ssh users group"
+  description = "List of users to add the ssh users group, (optional)"
   type        = list
   default     = ["jameswoolfenden"]
 }
 
 variable "region" {
-  type    = string
-  default = "eu-west-1"
+  description = "The AWS region"
+  type        = string
+  default     = "eu-west-1"
 }
 
 variable "account_id" {
-  type = string
+  description = "The AWS account of the instances to connect to:(optional)"
+  type        = string
+}
+
+variable "enablesshgroup" {
+  type        = number
+  description = "Swithch to enable ssh group"
+  default     = 1
 }

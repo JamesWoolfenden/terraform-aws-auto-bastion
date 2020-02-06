@@ -39,9 +39,3 @@ resource "aws_iam_group_membership" "ssh" {
 
   group = aws_iam_group.ssh[0].name
 }
-
-variable "enablesshgroup" {
-  type        = number
-  description = "Swithch to enable ssh group"
-  default     = 1
-}

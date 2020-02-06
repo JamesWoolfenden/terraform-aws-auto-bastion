@@ -52,17 +52,17 @@ module "auto-bastion" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
-| account\_id | n/a | `string` | n/a | yes |
+| account\_id | The AWS account of the instances to connect to:(optional) | `string` | n/a | yes |
 | allowed\_ips | Allow this IP through the firewall | `string` | n/a | yes |
 | asg | All the Settings of an Auto Scaling Group | `map` | <pre>{<br>  "max_size": 1,<br>  "min_size": 1,<br>  "name": "terraform-asg-bastion"<br>}<br></pre> | no |
 | common\_tags | Implements the common tags scheme | `map` | n/a | yes |
 | enablesshgroup | Swithch to enable ssh group | `number` | `1` | no |
 | instance\_type | The EC2 instance type | `string` | `"t2.micro"` | no |
 | name | Name of the ec2 instance | `string` | n/a | yes |
-| region | n/a | `string` | `"eu-west-1"` | no |
-| ssm\_standard\_role | n/a | `string` | `"arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"` | no |
+| region | The AWS region | `string` | `"eu-west-1"` | no |
+| ssm\_standard\_role | The IAM role to add to the instance profile, the default enables SSM | `string` | `"arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"` | no |
 | subnet\_ids | A list of Subnet IDs | `list` | n/a | yes |
-| users | List of users to add the ssh users group | `list` | <pre>[<br>  "jameswoolfenden"<br>]<br></pre> | no |
+| users | List of users to add the ssh users group, (optional) | `list` | <pre>[<br>  "jameswoolfenden"<br>]<br></pre> | no |
 | vpc\_id | The ID of the VPC being used | `string` | n/a | yes |
 
 ## Outputs
