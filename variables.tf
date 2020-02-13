@@ -63,7 +63,7 @@ variable "account_id" {
 
 variable "enablesshgroup" {
   type        = number
-  description = "Swithch to enable ssh group"
+  description = "Switch to enable ssh group"
   default     = 1
 }
 
