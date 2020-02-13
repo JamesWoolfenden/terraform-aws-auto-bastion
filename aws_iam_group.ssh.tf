@@ -1,11 +1,11 @@
 resource "aws_iam_group" "ssh" {
   count = var.enablesshgroup
-  name  = "ssh-users"
+  name  = var.ssh_name
 }
 
 resource "aws_iam_group_policy" "ssh_policy" {
   count = var.enablesshgroup
-  name  = "ssh_policy_${var.region}"
+  name  = var.ssh_name
   group = aws_iam_group.ssh[0].id
 
   policy = <<EOF
@@ -33,9 +33,7 @@ EOF
 
 resource "aws_iam_group_membership" "ssh" {
   count = var.enablesshgroup
-  name  = "ssh-group-membership"
-
+  name  = var.ssh_name
   users = var.users
-
   group = aws_iam_group.ssh[0].name
 }

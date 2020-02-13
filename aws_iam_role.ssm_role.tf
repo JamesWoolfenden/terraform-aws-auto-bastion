@@ -1,5 +1,4 @@
 resource "aws_iam_role" "ssm_role" {
-  name               = "ssm-terraform"
   assume_role_policy = data.aws_iam_policy_document.assume.json
 }
 
@@ -9,6 +8,5 @@ resource "aws_iam_role_policy_attachment" "ssm_standard" {
 }
 
 resource "aws_iam_instance_profile" "bastion" {
-  name = "ssm-poc-instance-profile"
   role = aws_iam_role.ssm_role.name
 }

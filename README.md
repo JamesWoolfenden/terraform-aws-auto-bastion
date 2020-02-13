@@ -60,6 +60,7 @@ module "auto-bastion" {
 | instance\_type | The EC2 instance type | `string` | `"t2.micro"` | no |
 | name | Name of the ec2 instance | `string` | n/a | yes |
 | region | The AWS region | `string` | `"eu-west-1"` | no |
+| ssh\_name | The name of the ssh group objects | `string` | `"ssh"` | no |
 | ssm\_standard\_role | The IAM role to add to the instance profile, the default enables SSM | `string` | `"arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"` | no |
 | subnet\_ids | A list of Subnet IDs | `list` | n/a | yes |
 | users | List of users to add the ssh users group, (optional) | `list` | <pre>[<br>  "jameswoolfenden"<br>]<br></pre> | no |

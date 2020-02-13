@@ -66,3 +66,9 @@ variable "enablesshgroup" {
   description = "Swithch to enable ssh group"
   default     = 1
 }
+
+variable "ssh_name" {
+  type        = string
+  description = "The name of the ssh group objects"
+  default     = "ssh"
+}
