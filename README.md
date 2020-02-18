@@ -56,7 +56,7 @@ module "auto-bastion" {
 | allowed\_ips | Allow this IP through the firewall | `string` | n/a | yes |
 | asg | All the Settings of an Auto Scaling Group | `map` | <pre>{<br>  "max_size": 1,<br>  "min_size": 1,<br>  "name": "terraform-asg-bastion"<br>}<br></pre> | no |
 | common\_tags | Implements the common tags scheme | `map` | n/a | yes |
-| enablesshgroup | Swithch to enable ssh group | `number` | `1` | no |
+| enablesshgroup | Switch to enable ssh group | `number` | `1` | no |
 | instance\_type | The EC2 instance type | `string` | `"t2.micro"` | no |
 | name | Name of the ec2 instance | `string` | n/a | yes |
 | region | The AWS region | `string` | `"eu-west-1"` | no |
