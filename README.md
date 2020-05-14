@@ -36,7 +36,7 @@ Include this repository as a module in your existing terraform code:
 module "auto-bastion" {
   source            = "JamesWoolfenden/auto-bastion/aws"
   version           = "0.0.4"
-  allowed_ips       = [chomp(data.http.myip.body)]
+  allowed_ips       = ["${chomp(data.http.myip.body)}/32"]
   common_tags       = var.common_tags
   vpc_id            = element(data.aws_vpcs.vpc.ids, 0)
   instance_type     = var.instance_type

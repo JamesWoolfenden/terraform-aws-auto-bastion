@@ -21,8 +21,8 @@ variable "subnet_ids" {
 }
 
 variable "allowed_ips" {
-  description = "Allow this IP through the firewall"
-  type        = string
+  description = "Allow this list of IPs through the firewall"
+  type        = list
 }
 
 variable "common_tags" {
