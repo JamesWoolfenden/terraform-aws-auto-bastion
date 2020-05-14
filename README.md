@@ -1,6 +1,11 @@
 [![Slalom][logo]](https://slalom.com)
 
-# terraform-aws-auto-bastion [![Build Status](https://github.com/JamesWoolfenden/terraform-aws-auto-bastion/workflows/Verify%20and%20Bump/badge.svg?branch=master)](https://github.com/JamesWoolfenden/terraform-aws-auto-bastion) [![Latest Release](https://img.shields.io/github/release/JamesWoolfenden/terraform-aws-auto-bastion.svg)](https://github.com/JamesWoolfenden/terraform-aws-auto-bastion/releases/latest) [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
+# terraform-aws-auto-bastion
+
+[![Build Status](https://github.com/JamesWoolfenden/terraform-aws-auto-bastion/workflows/Verify%20and%20Bump/badge.svg?branch=master)](https://github.com/JamesWoolfenden/terraform-aws-auto-bastion)
+[![Latest Release](https://img.shields.io/github/release/JamesWoolfenden/terraform-aws-auto-bastion.svg)](https://github.com/JamesWoolfenden/terraform-aws-auto-bastion/releases/latest)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
+[![pre-commit](https://img.shields.io/badge/checkov-verified-brightgreen)](https://www.checkov.io/)
 
 ---
 
@@ -54,7 +59,7 @@ module "auto-bastion" {
 |------|-------------|------|---------|:-----:|
 | account\_id | The AWS account of the instances to connect to:(optional) | `string` | n/a | yes |
 | allowed\_ips | Allow this IP through the firewall | `string` | n/a | yes |
-| asg | All the Settings of an Auto Scaling Group | `map` | <pre>{<br>  "max_size": 1,<br>  "min_size": 1,<br>  "name": "terraform-asg-bastion"<br>}<br></pre> | no |
+| asg | All the Settings of an Auto Scaling Group | `map` | <pre>{<br>  "max_size": 1,<br>  "min_size": 1,<br>  "name": "terraform-asg-bastion"<br>}</pre> | no |
 | common\_tags | Implements the common tags scheme | `map` | n/a | yes |
 | enablesshgroup | Switch to enable ssh group | `number` | `1` | no |
 | instance\_type | The EC2 instance type | `string` | `"t2.micro"` | no |
@@ -63,7 +68,7 @@ module "auto-bastion" {
 | ssh\_name | The name of the ssh group objects | `string` | `"ssh"` | no |
 | ssm\_standard\_role | The IAM role to add to the instance profile, the default enables SSM | `string` | `"arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"` | no |
 | subnet\_ids | A list of Subnet IDs | `list` | n/a | yes |
-| users | List of users to add the ssh users group, (optional) | `list` | <pre>[<br>  "jameswoolfenden"<br>]<br></pre> | no |
+| users | List of users to add the ssh users group, (optional) | `list` | <pre>[<br>  "jameswoolfenden"<br>]</pre> | no |
 | vpc\_id | The ID of the VPC being used | `string` | n/a | yes |
 
 ## Outputs
