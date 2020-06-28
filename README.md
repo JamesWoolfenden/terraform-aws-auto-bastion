@@ -47,6 +47,10 @@ module "auto-bastion" {
 ```
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -56,9 +60,9 @@ module "auto-bastion" {
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | account\_id | The AWS account of the instances to connect to:(optional) | `string` | n/a | yes |
-| allowed\_ips | Allow this IP through the firewall | `string` | n/a | yes |
+| allowed\_ips | Allow this list of IPs through the firewall | `list` | n/a | yes |
 | asg | All the Settings of an Auto Scaling Group | `map` | <pre>{<br>  "max_size": 1,<br>  "min_size": 1,<br>  "name": "terraform-asg-bastion"<br>}</pre> | no |
 | common\_tags | Implements the common tags scheme | `map` | n/a | yes |
 | enablesshgroup | Switch to enable ssh group | `number` | `1` | no |
@@ -126,8 +130,8 @@ under the License.
 [logo]: https://gist.githubusercontent.com/JamesWoolfenden/5c457434351e9fe732ca22b78fdd7d5e/raw/15933294ae2b00f5dba6557d2be88f4b4da21201/slalom-logo.png
 [website]: https://slalom.com
 [github]: https://github.com/jameswoolfenden
-[linkedin]: https://www.linkedin.com/company/slalom-consulting/
-[twitter]: https://twitter.com/Slalom
+[linkedin]: https://www.linkedin.com/in/jameswoolfenden/
+[twitter]: https://twitter.com/JimWoolfenden
 
 [share_twitter]: https://twitter.com/intent/tweet/?text=terraform-auto-bastion&url=https://github.com/JamesWoolfenden/terraform-auto-bastion
 [share_linkedin]: https://www.linkedin.com/shareArticle?mini=true&title=terraform-auto-bastion&url=https://github.com/JamesWoolfenden/terraform-auto-bastion
