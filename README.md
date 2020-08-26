@@ -47,6 +47,10 @@ module "auto-bastion" {
 ```
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -56,7 +60,7 @@ module "auto-bastion" {
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | account\_id | The AWS account of the instances to connect to:(optional) | `string` | n/a | yes |
 | allowed\_ips | Allow this list of IPs through the firewall | `list` | n/a | yes |
 | asg | All the Settings of an Auto Scaling Group | `map` | <pre>{<br>  "max_size": 1,<br>  "min_size": 1,<br>  "name": "terraform-asg-bastion"<br>}</pre> | no |
