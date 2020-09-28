@@ -1,5 +1,3 @@
-[![Slalom][logo]](https://slalom.com)
-
 # terraform-aws-auto-bastion
 
 [![Build Status](https://github.com/JamesWoolfenden/terraform-aws-auto-bastion/workflows/Verify%20and%20Bump/badge.svg?branch=master)](https://github.com/JamesWoolfenden/terraform-aws-auto-bastion)
@@ -47,6 +45,7 @@ module "auto-bastion" {
 ```
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+
 ## Requirements
 
 No requirements.
@@ -54,34 +53,35 @@ No requirements.
 ## Providers
 
 | Name | Version |
-|------|---------|
-| aws | n/a |
+| ---- | ------- |
+| aws  | n/a     |
 
 ## Inputs
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| account\_id | The AWS account of the instances to connect to:(optional) | `string` | n/a | yes |
-| allowed\_ips | Allow this list of IPs through the firewall | `list` | n/a | yes |
-| asg | All the Settings of an Auto Scaling Group | `map` | <pre>{<br>  "max_size": 1,<br>  "min_size": 1,<br>  "name": "terraform-asg-bastion"<br>}</pre> | no |
-| common\_tags | Implements the common tags scheme | `map` | n/a | yes |
-| enablesshgroup | Switch to enable ssh group | `number` | `1` | no |
-| instance\_type | The EC2 instance type | `string` | `"t2.micro"` | no |
-| name | Name of the ec2 instance | `string` | n/a | yes |
-| region | The AWS region | `string` | `"eu-west-1"` | no |
-| ssh\_name | The name of the ssh group objects | `string` | `"ssh"` | no |
-| ssm\_standard\_role | The IAM role to add to the instance profile, the default enables SSM | `string` | `"arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"` | no |
-| subnet\_ids | A list of Subnet IDs | `list` | n/a | yes |
-| users | List of users to add the ssh users group, (optional) | `list` | <pre>[<br>  "jameswoolfenden"<br>]</pre> | no |
-| vpc\_id | The ID of the VPC being used | `string` | n/a | yes |
+| Name              | Description                                                          | Type     | Default                                                                                     | Required |
+| ----------------- | -------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------- | :------: |
+| account_id        | The AWS account of the instances to connect to:(optional)            | `string` | n/a                                                                                         |   yes    |
+| allowed_ips       | Allow this list of IPs through the firewall                          | `list`   | n/a                                                                                         |   yes    |
+| asg               | All the Settings of an Auto Scaling Group                            | `map`    | <pre>{<br> "max_size": 1,<br> "min_size": 1,<br> "name": "terraform-asg-bastion"<br>}</pre> |    no    |
+| common_tags       | Implements the common tags scheme                                    | `map`    | n/a                                                                                         |   yes    |
+| enablesshgroup    | Switch to enable ssh group                                           | `number` | `1`                                                                                         |    no    |
+| instance_type     | The EC2 instance type                                                | `string` | `"t2.micro"`                                                                                |    no    |
+| name              | Name of the ec2 instance                                             | `string` | n/a                                                                                         |   yes    |
+| region            | The AWS region                                                       | `string` | `"eu-west-1"`                                                                               |    no    |
+| ssh_name          | The name of the ssh group objects                                    | `string` | `"ssh"`                                                                                     |    no    |
+| ssm_standard_role | The IAM role to add to the instance profile, the default enables SSM | `string` | `"arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"`                                |    no    |
+| subnet_ids        | A list of Subnet IDs                                                 | `list`   | n/a                                                                                         |   yes    |
+| users             | List of users to add the ssh users group, (optional)                 | `list`   | <pre>[<br> "jameswoolfenden"<br>]</pre>                                                     |    no    |
+| vpc_id            | The ID of the VPC being used                                         | `string` | n/a                                                                                         |   yes    |
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| bastion | n/a |
+| Name    | Description |
+| ------- | ----------- |
+| bastion | n/a         |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+
 ## Help
 
 **Got a question?**
@@ -96,7 +96,7 @@ Please use the [issue tracker](https://github.com/JamesWoolfenden/terraform-auto
 
 ## Copyrights
 
-Copyright © 2019-2020 [Slalom, LLC](https://slalom.com)
+Copyright © 2019-2020 James Woolfenden
 
 ## License
 
@@ -105,19 +105,19 @@ Copyright © 2019-2020 [Slalom, LLC](https://slalom.com)
 See [LICENSE](LICENSE) for full details.
 
 Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
+or more contributor license agreements. See the NOTICE file
 distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
+regarding copyright ownership. The ASF licenses this file
 to you under the Apache License, Version 2.0 (the
 "License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
+with the License. You may obtain a copy of the License at
 
 <https://www.apache.org/licenses/LICENSE-2.0>
 
 Unless required by applicable law or agreed to in writing,
 software distributed under the License is distributed on an
 "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
+KIND, either express or implied. See the License for the
 specific language governing permissions and limitations
 under the License.
 
@@ -127,12 +127,9 @@ under the License.
 
 [jameswoolfenden_homepage]: https://github.com/jameswoolfenden
 [jameswoolfenden_avatar]: https://github.com/jameswoolfenden.png?size=150
-[logo]: https://gist.githubusercontent.com/JamesWoolfenden/5c457434351e9fe732ca22b78fdd7d5e/raw/15933294ae2b00f5dba6557d2be88f4b4da21201/slalom-logo.png
-[website]: https://slalom.com
 [github]: https://github.com/jameswoolfenden
 [linkedin]: https://www.linkedin.com/in/jameswoolfenden/
 [twitter]: https://twitter.com/JimWoolfenden
-
 [share_twitter]: https://twitter.com/intent/tweet/?text=terraform-auto-bastion&url=https://github.com/JamesWoolfenden/terraform-auto-bastion
 [share_linkedin]: https://www.linkedin.com/shareArticle?mini=true&title=terraform-auto-bastion&url=https://github.com/JamesWoolfenden/terraform-auto-bastion
 [share_reddit]: https://reddit.com/submit/?url=https://github.com/JamesWoolfenden/terraform-auto-bastion
