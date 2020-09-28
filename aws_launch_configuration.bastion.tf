@@ -12,6 +12,10 @@ resource "aws_launch_configuration" "bastion" {
     volume_type = "standard"
   }
 
+  root_block_device {
+    encrypted = true
+  }
+
   lifecycle {
     create_before_destroy = true
   }

@@ -45,7 +45,6 @@ module "auto-bastion" {
 ```
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-
 ## Requirements
 
 No requirements.
@@ -53,32 +52,32 @@ No requirements.
 ## Providers
 
 | Name | Version |
-| ---- | ------- |
-| aws  | n/a     |
+|------|---------|
+| aws | n/a |
 
 ## Inputs
 
-| Name              | Description                                                          | Type     | Default                                                                                     | Required |
-| ----------------- | -------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------- | :------: |
-| account_id        | The AWS account of the instances to connect to:(optional)            | `string` | n/a                                                                                         |   yes    |
-| allowed_ips       | Allow this list of IPs through the firewall                          | `list`   | n/a                                                                                         |   yes    |
-| asg               | All the Settings of an Auto Scaling Group                            | `map`    | <pre>{<br> "max_size": 1,<br> "min_size": 1,<br> "name": "terraform-asg-bastion"<br>}</pre> |    no    |
-| common_tags       | Implements the common tags scheme                                    | `map`    | n/a                                                                                         |   yes    |
-| enablesshgroup    | Switch to enable ssh group                                           | `number` | `1`                                                                                         |    no    |
-| instance_type     | The EC2 instance type                                                | `string` | `"t2.micro"`                                                                                |    no    |
-| name              | Name of the ec2 instance                                             | `string` | n/a                                                                                         |   yes    |
-| region            | The AWS region                                                       | `string` | `"eu-west-1"`                                                                               |    no    |
-| ssh_name          | The name of the ssh group objects                                    | `string` | `"ssh"`                                                                                     |    no    |
-| ssm_standard_role | The IAM role to add to the instance profile, the default enables SSM | `string` | `"arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"`                                |    no    |
-| subnet_ids        | A list of Subnet IDs                                                 | `list`   | n/a                                                                                         |   yes    |
-| users             | List of users to add the ssh users group, (optional)                 | `list`   | <pre>[<br> "jameswoolfenden"<br>]</pre>                                                     |    no    |
-| vpc_id            | The ID of the VPC being used                                         | `string` | n/a                                                                                         |   yes    |
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| account\_id | The AWS account of the instances to connect to:(optional) | `string` | n/a | yes |
+| allowed\_ips | Allow this list of IPs through the firewall | `list` | n/a | yes |
+| asg | All the Settings of an Auto Scaling Group | `map` | <pre>{<br>  "max_size": 1,<br>  "min_size": 1,<br>  "name": "terraform-asg-bastion"<br>}</pre> | no |
+| common\_tags | Implements the common tags scheme | `map` | n/a | yes |
+| enablesshgroup | Switch to enable ssh group | `number` | `1` | no |
+| instance\_type | The EC2 instance type | `string` | `"t2.micro"` | no |
+| name | Name of the ec2 instance | `string` | n/a | yes |
+| region | The AWS region | `string` | `"eu-west-1"` | no |
+| ssh\_name | The name of the ssh group objects | `string` | `"ssh"` | no |
+| ssm\_standard\_role | The IAM role to add to the instance profile, the default enables SSM | `string` | `"arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"` | no |
+| subnet\_ids | A list of Subnet IDs | `list` | n/a | yes |
+| users | List of users to add the ssh users group, (optional) | `list` | <pre>[<br>  "jameswoolfenden"<br>]</pre> | no |
+| vpc\_id | The ID of the VPC being used | `string` | n/a | yes |
 
 ## Outputs
 
-| Name    | Description |
-| ------- | ----------- |
-| bastion | n/a         |
+| Name | Description |
+|------|-------------|
+| bastion | n/a |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
