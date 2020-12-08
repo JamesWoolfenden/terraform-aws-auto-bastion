@@ -17,16 +17,16 @@ variable "ssm_standard_role" {
 
 variable "subnet_ids" {
   description = "A list of Subnet IDs"
-  type        = list
+  type        = list(any)
 }
 
 variable "allowed_ips" {
   description = "Allow this list of IPs through the firewall"
-  type        = list
+  type        = list(any)
 }
 
 variable "common_tags" {
-  type        = map
+  type        = map(any)
   description = "Implements the common tags scheme"
 }
 
@@ -46,7 +46,7 @@ variable "asg" {
 
 variable "users" {
   description = "List of users to add the ssh users group, (optional)"
-  type        = list
+  type        = list(any)
   default     = ["jameswoolfenden"]
 }
 
@@ -69,6 +69,6 @@ variable "enablesshgroup" {
 
 variable "ssh_name" {
   type        = string
-  description = "The name of the ssh group objects"
+  description = "The name of the SSH group objects"
   default     = "ssh"
 }

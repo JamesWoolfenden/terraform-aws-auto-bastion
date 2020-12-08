@@ -33,7 +33,7 @@ Include this repository as a module in your existing terraform code:
 ```hcl
 module "auto-bastion" {
   source            = "JamesWoolfenden/auto-bastion/aws"
-  version           = "0.0.4"
+  version           = "0.2.o"
   allowed_ips       = ["${chomp(data.http.myip.body)}/32"]
   common_tags       = var.common_tags
   vpc_id            = element(data.aws_vpcs.vpc.ids, 0)
@@ -47,30 +47,36 @@ module "auto-bastion" {
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| aws | 3.20.0 |
+| external | 2.0 |
+| http | 2.0 |
+| local | 2.0 |
+| tls | 3.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | n/a |
+| aws | 3.20.0 |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | account\_id | The AWS account of the instances to connect to:(optional) | `string` | n/a | yes |
-| allowed\_ips | Allow this list of IPs through the firewall | `list` | n/a | yes |
+| allowed\_ips | Allow this list of IPs through the firewall | `list(any)` | n/a | yes |
 | asg | All the Settings of an Auto Scaling Group | `map` | <pre>{<br>  "max_size": 1,<br>  "min_size": 1,<br>  "name": "terraform-asg-bastion"<br>}</pre> | no |
-| common\_tags | Implements the common tags scheme | `map` | n/a | yes |
+| common\_tags | Implements the common tags scheme | `map(any)` | n/a | yes |
 | enablesshgroup | Switch to enable ssh group | `number` | `1` | no |
 | instance\_type | The EC2 instance type | `string` | `"t2.micro"` | no |
 | name | Name of the ec2 instance | `string` | n/a | yes |
 | region | The AWS region | `string` | `"eu-west-1"` | no |
-| ssh\_name | The name of the ssh group objects | `string` | `"ssh"` | no |
+| ssh\_name | The name of the SSH group objects | `string` | `"ssh"` | no |
 | ssm\_standard\_role | The IAM role to add to the instance profile, the default enables SSM | `string` | `"arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"` | no |
-| subnet\_ids | A list of Subnet IDs | `list` | n/a | yes |
-| users | List of users to add the ssh users group, (optional) | `list` | <pre>[<br>  "jameswoolfenden"<br>]</pre> | no |
+| subnet\_ids | A list of Subnet IDs | `list(any)` | n/a | yes |
+| users | List of users to add the ssh users group, (optional) | `list(any)` | <pre>[<br>  "jameswoolfenden"<br>]</pre> | no |
 | vpc\_id | The ID of the VPC being used | `string` | n/a | yes |
 
 ## Outputs
