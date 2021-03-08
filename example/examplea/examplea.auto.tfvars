@@ -1,2 +1,3 @@
 common_tags = {
-"createdby" = "Terraform" }
+  "createdby" = "Terraform"
+module = "terraform-aws-auto-bastion" }
