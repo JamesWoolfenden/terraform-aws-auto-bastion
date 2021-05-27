@@ -1,4 +1,5 @@
 resource "aws_autoscaling_group" "bastion" {
+  # checkov:skip=CKV_AWS_153: ADD REASON
   name                 = var.asg["name"]
   launch_configuration = aws_launch_configuration.bastion.name
   min_size             = var.asg["min_size"]

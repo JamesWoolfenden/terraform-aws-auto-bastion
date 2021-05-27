@@ -32,6 +32,8 @@ EOF
 }
 
 resource "aws_iam_group_membership" "ssh" {
+  # checkov:skip=CKV2_AWS_14: ADD REASON
+  # checkov:skip=CKV2_AWS_21: ADD REASON
   count = var.enablesshgroup
   name  = var.ssh_name
   users = var.users
