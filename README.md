@@ -51,15 +51,16 @@ module "auto-bastion" {
 ```
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+
 ## Requirements
 
 No requirements.
 
 ## Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+| Name                                             | Version |
+| ------------------------------------------------ | ------- |
+| <a name="provider_aws"></a> [aws](#provider_aws) | n/a     |
 
 ## Modules
 
@@ -67,43 +68,44 @@ No modules.
 
 ## Resources
 
-| Name | Type |
-|------|------|
-| [aws_autoscaling_group.bastion](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group) | resource |
-| [aws_iam_group.ssh](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group) | resource |
-| [aws_iam_group_membership.ssh](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group_membership) | resource |
-| [aws_iam_group_policy.ssh_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group_policy) | resource |
-| [aws_iam_instance_profile.bastion](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile) | resource |
-| [aws_iam_role.ssm_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
-| [aws_iam_role_policy_attachment.ssm_standard](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_launch_configuration.bastion](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/launch_configuration) | resource |
-| [aws_security_group.instance_ssh_access](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
-| [aws_ami.amazon](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
-| [aws_iam_policy_document.assume](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| Name                                                                                                                                                  | Type        |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| [aws_autoscaling_group.bastion](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group)                        | resource    |
+| [aws_iam_group.ssh](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group)                                            | resource    |
+| [aws_iam_group_membership.ssh](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group_membership)                      | resource    |
+| [aws_iam_group_policy.ssh_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group_policy)                       | resource    |
+| [aws_iam_instance_profile.bastion](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile)                  | resource    |
+| [aws_iam_role.ssm_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role)                                         | resource    |
+| [aws_iam_role_policy_attachment.ssm_standard](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource    |
+| [aws_launch_configuration.bastion](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/launch_configuration)                  | resource    |
+| [aws_security_group.instance_ssh_access](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group)                  | resource    |
+| [aws_ami.amazon](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami)                                                  | data source |
+| [aws_iam_policy_document.assume](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document)                  | data source |
 
 ## Inputs
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_account_id"></a> [account\_id](#input\_account\_id) | The AWS account of the instances to connect to:(optional) | `string` | n/a | yes |
-| <a name="input_allowed_ips"></a> [allowed\_ips](#input\_allowed\_ips) | Allow this list of IPs through the firewall | `list(any)` | n/a | yes |
-| <a name="input_asg"></a> [asg](#input\_asg) | All the Settings of an Auto Scaling Group | `map` | <pre>{<br>  "max_size": 1,<br>  "min_size": 1,<br>  "name": "terraform-asg-bastion"<br>}</pre> | no |
-| <a name="input_common_tags"></a> [common\_tags](#input\_common\_tags) | Implements the common tags scheme | `map(any)` | n/a | yes |
-| <a name="input_enablesshgroup"></a> [enablesshgroup](#input\_enablesshgroup) | Switch to enable ssh group | `number` | `1` | no |
-| <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | The EC2 instance type | `string` | `"t2.micro"` | no |
-| <a name="input_name"></a> [name](#input\_name) | Name of the ec2 instance | `string` | n/a | yes |
-| <a name="input_region"></a> [region](#input\_region) | The AWS region | `string` | `"eu-west-1"` | no |
-| <a name="input_ssh_name"></a> [ssh\_name](#input\_ssh\_name) | The name of the SSH group objects | `string` | `"ssh"` | no |
-| <a name="input_ssm_standard_role"></a> [ssm\_standard\_role](#input\_ssm\_standard\_role) | The IAM role to add to the instance profile, the default enables SSM | `string` | `"arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"` | no |
-| <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | A list of Subnet IDs | `list(any)` | n/a | yes |
-| <a name="input_users"></a> [users](#input\_users) | List of users to add the ssh users group, (optional) | `list(any)` | <pre>[<br>  "jameswoolfenden"<br>]</pre> | no |
-| <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | The ID of the VPC being used | `string` | n/a | yes |
+| Name                                                                                 | Description                                                          | Type        | Default                                                                                     | Required |
+| ------------------------------------------------------------------------------------ | -------------------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------- | :------: |
+| <a name="input_account_id"></a> [account_id](#input_account_id)                      | The AWS account of the instances to connect to:(optional)            | `string`    | n/a                                                                                         |   yes    |
+| <a name="input_allowed_ips"></a> [allowed_ips](#input_allowed_ips)                   | Allow this list of IPs through the firewall                          | `list(any)` | n/a                                                                                         |   yes    |
+| <a name="input_asg"></a> [asg](#input_asg)                                           | All the Settings of an Auto Scaling Group                            | `map`       | <pre>{<br> "max_size": 1,<br> "min_size": 1,<br> "name": "terraform-asg-bastion"<br>}</pre> |    no    |
+| <a name="input_common_tags"></a> [common_tags](#input_common_tags)                   | Implements the common tags scheme                                    | `map(any)`  | n/a                                                                                         |   yes    |
+| <a name="input_enablesshgroup"></a> [enablesshgroup](#input_enablesshgroup)          | Switch to enable ssh group                                           | `number`    | `1`                                                                                         |    no    |
+| <a name="input_instance_type"></a> [instance_type](#input_instance_type)             | The EC2 instance type                                                | `string`    | `"t2.micro"`                                                                                |    no    |
+| <a name="input_name"></a> [name](#input_name)                                        | Name of the ec2 instance                                             | `string`    | n/a                                                                                         |   yes    |
+| <a name="input_region"></a> [region](#input_region)                                  | The AWS region                                                       | `string`    | `"eu-west-1"`                                                                               |    no    |
+| <a name="input_ssh_name"></a> [ssh_name](#input_ssh_name)                            | The name of the SSH group objects                                    | `string`    | `"ssh"`                                                                                     |    no    |
+| <a name="input_ssm_standard_role"></a> [ssm_standard_role](#input_ssm_standard_role) | The IAM role to add to the instance profile, the default enables SSM | `string`    | `"arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"`                                |    no    |
+| <a name="input_subnet_ids"></a> [subnet_ids](#input_subnet_ids)                      | A list of Subnet IDs                                                 | `list(any)` | n/a                                                                                         |   yes    |
+| <a name="input_users"></a> [users](#input_users)                                     | List of users to add the ssh users group, (optional)                 | `list(any)` | <pre>[<br> "jameswoolfenden"<br>]</pre>                                                     |    no    |
+| <a name="input_vpc_id"></a> [vpc_id](#input_vpc_id)                                  | The ID of the VPC being used                                         | `string`    | n/a                                                                                         |   yes    |
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_bastion"></a> [bastion](#output\_bastion) | n/a |
+| Name                                                     | Description |
+| -------------------------------------------------------- | ----------- |
+| <a name="output_bastion"></a> [bastion](#output_bastion) | n/a         |
+
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Help
@@ -120,7 +122,7 @@ Please use the [issue tracker](https://github.com/JamesWoolfenden/terraform-auto
 
 ## Copyrights
 
-Copyright © 2019-2021 James Woolfenden
+Copyright © 2019-2022 James Woolfenden
 
 ## License
 
