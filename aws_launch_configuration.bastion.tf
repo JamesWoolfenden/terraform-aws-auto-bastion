@@ -16,7 +16,11 @@ resource "aws_launch_configuration" "bastion" {
   root_block_device {
     encrypted = true
   }
+  metadata_options {
 
+    http_endpoint = "enabled"
+    http_tokens   = "required"
+  }
   lifecycle {
     create_before_destroy = true
   }
