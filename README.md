@@ -106,6 +106,85 @@ No modules.
 | <a name="output_bastion"></a> [bastion](#output\_bastion) | n/a |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
+## Policy
+
+<!-- BEGINNING OF PRE-COMMIT-PIKE DOCS HOOK -->
+The Policy required is:
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "autoscaling:CreateAutoScalingGroup",
+                "autoscaling:CreateLaunchConfiguration",
+                "autoscaling:DeleteAutoScalingGroup",
+                "autoscaling:DeleteLaunchConfiguration",
+                "autoscaling:DescribeAutoScalingGroups",
+                "autoscaling:DescribeLaunchConfigurations",
+                "autoscaling:DescribeScalingActivities",
+                "autoscaling:UpdateAutoScalingGroup"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:AuthorizeSecurityGroupEgress",
+                "ec2:AuthorizeSecurityGroupIngress",
+                "ec2:CreateSecurityGroup",
+                "ec2:CreateTags",
+                "ec2:DeleteSecurityGroup",
+                "ec2:DeleteTags",
+                "ec2:DescribeAccountAttributes",
+                "ec2:DescribeImages",
+                "ec2:DescribeNetworkInterfaces",
+                "ec2:DescribeSecurityGroups",
+                "ec2:DescribeSubnets",
+                "ec2:DescribeVpcs",
+                "ec2:RevokeSecurityGroupEgress",
+                "ec2:RevokeSecurityGroupIngress"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "VisualEditor2",
+            "Effect": "Allow",
+            "Action": [
+                "iam:AddRoleToInstanceProfile",
+                "iam:AddUserToGroup",
+                "iam:AttachRolePolicy",
+                "iam:CreateGroup",
+                "iam:CreateInstanceProfile",
+                "iam:CreateRole",
+                "iam:DeleteGroup",
+                "iam:DeleteGroupPolicy",
+                "iam:DeleteInstanceProfile",
+                "iam:DeleteRole",
+                "iam:DetachRolePolicy",
+                "iam:GetGroup",
+                "iam:GetGroupPolicy",
+                "iam:GetInstanceProfile",
+                "iam:GetRole",
+                "iam:ListAttachedRolePolicies",
+                "iam:ListInstanceProfilesForRole",
+                "iam:ListRolePolicies",
+                "iam:PassRole",
+                "iam:PutGroupPolicy",
+                "iam:RemoveRoleFromInstanceProfile",
+                "iam:RemoveUserFromGroup"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+
+```
+<!-- END OF PRE-COMMIT-PIKE DOCS HOOK -->
 ## Help
 
 **Got a question?**
@@ -151,11 +230,3 @@ under the License.
 
 [jameswoolfenden_homepage]: https://github.com/jameswoolfenden
 [jameswoolfenden_avatar]: https://github.com/jameswoolfenden.png?size=150
-[github]: https://github.com/jameswoolfenden
-[linkedin]: https://www.linkedin.com/in/jameswoolfenden/
-[twitter]: https://twitter.com/JimWoolfenden
-[share_twitter]: https://twitter.com/intent/tweet/?text=terraform-auto-bastion&url=https://github.com/JamesWoolfenden/terraform-auto-bastion
-[share_linkedin]: https://www.linkedin.com/shareArticle?mini=true&title=terraform-auto-bastion&url=https://github.com/JamesWoolfenden/terraform-auto-bastion
-[share_reddit]: https://reddit.com/submit/?url=https://github.com/JamesWoolfenden/terraform-auto-bastion
-[share_facebook]: https://facebook.com/sharer/sharer.php?u=https://github.com/JamesWoolfenden/terraform-auto-bastion
-[share_email]: mailto:?subject=terraform-auto-bastion&body=https://github.com/JamesWoolfenden/terraform-auto-bastion
