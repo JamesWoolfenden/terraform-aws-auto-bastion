@@ -1,4 +1,3 @@
-
 output "bastion" {
-  value = aws_launch_configuration.bastion
+  value = aws_launch_template.bastion
 }

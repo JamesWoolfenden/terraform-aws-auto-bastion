@@ -2,7 +2,6 @@ resource "aws_iam_group" "ssh" {
   count = var.enablesshgroup
   name  = var.ssh_name
 }
-
 resource "aws_iam_group_policy" "ssh_policy" {
   count = var.enablesshgroup
   name  = var.ssh_name
@@ -30,10 +29,9 @@ resource "aws_iam_group_policy" "ssh_policy" {
 }
 EOF
 }
-
 resource "aws_iam_group_membership" "ssh" {
-  # checkov:skip=CKV2_AWS_14: ADD REASON
-  # checkov:skip=CKV2_AWS_21: ADD REASON
+  # checkov:skip=CKV2_AWS_14: SSH group is restricted to EC2 Instance Connect permissions only, not admin access
+  # checkov:skip=CKV2_AWS_21: MFA enforcement is managed at the AWS Organizations policy level
   count = var.enablesshgroup
   name  = var.ssh_name
   users = var.users

@@ -1,5 +1,6 @@
 # Instance Security group
 resource "aws_security_group" "instance_ssh_access" {
+  # checkov:skip=CKV_AWS_382: Bastion host requires unrestricted outbound access for SSM agent and OS package updates
   description = "Allow SSH to instance with ssm agent"
   vpc_id      = var.vpc_id
 

@@ -125,15 +125,15 @@ resource "aws_iam_policy" "terraform_pike" {
             "Effect": "Allow",
             "Action": [
                 "autoscaling:CreateAutoScalingGroup",
-                "autoscaling:CreateLaunchConfiguration",
                 "autoscaling:DeleteAutoScalingGroup",
-                "autoscaling:DeleteLaunchConfiguration",
+                "autoscaling:Describe*",
                 "autoscaling:DescribeAutoScalingGroups",
-                "autoscaling:DescribeLaunchConfigurations",
                 "autoscaling:DescribeScalingActivities",
                 "autoscaling:UpdateAutoScalingGroup"
             ],
-            "Resource": "*"
+            "Resource": [
+                "*"
+            ]
         },
         {
             "Sid": "VisualEditor1",
@@ -141,18 +141,29 @@ resource "aws_iam_policy" "terraform_pike" {
             "Action": [
                 "ec2:AuthorizeSecurityGroupEgress",
                 "ec2:AuthorizeSecurityGroupIngress",
+                "ec2:CreateLaunchTemplate",
+                "ec2:CreateLaunchTemplateVersion",
                 "ec2:CreateSecurityGroup",
                 "ec2:CreateTags",
+                "ec2:DeleteLaunchTemplate",
                 "ec2:DeleteSecurityGroup",
                 "ec2:DeleteTags",
+                "ec2:Describe*",
                 "ec2:DescribeAccountAttributes",
                 "ec2:DescribeImages",
+                "ec2:DescribeInstanceTypes",
+                "ec2:DescribeLaunchTemplateVersions",
+                "ec2:DescribeLaunchTemplates",
                 "ec2:DescribeNetworkInterfaces",
                 "ec2:DescribeSecurityGroups",
+                "ec2:Get*",
                 "ec2:RevokeSecurityGroupEgress",
-                "ec2:RevokeSecurityGroupIngress"
+                "ec2:RevokeSecurityGroupIngress",
+                "ec2:RunInstances"
             ],
-            "Resource": "*"
+            "Resource": [
+                "*"
+            ]
         },
         {
             "Sid": "VisualEditor2",
@@ -181,7 +192,33 @@ resource "aws_iam_policy" "terraform_pike" {
                 "iam:RemoveRoleFromInstanceProfile",
                 "iam:RemoveUserFromGroup"
             ],
-            "Resource": "*"
+            "Resource": [
+                "*"
+            ]
+        },
+        {
+            "Sid": "VisualEditor3",
+            "Effect": "Allow",
+            "Action": [
+                "managed-fleets:DeleteAutoScalingGroup",
+                "managed-fleets:DeregisterAutoScalingGroup",
+                "managed-fleets:Get*",
+                "managed-fleets:RegisterAutoScalingGroup",
+                "managed-fleets:UpdateAutoScalingGroup"
+            ],
+            "Resource": [
+                "*"
+            ]
+        },
+        {
+            "Sid": "VisualEditor4",
+            "Effect": "Allow",
+            "Action": [
+                "ssm:Get*"
+            ],
+            "Resource": [
+                "*"
+            ]
         }
     ]
 })

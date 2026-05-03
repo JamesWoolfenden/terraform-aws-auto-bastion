@@ -1,4 +1,3 @@
-
 data "aws_ami" "amazon" {
   most_recent = true
 
