@@ -1,4 +1,5 @@
 resource "aws_launch_template" "bastion" {
+  # checkov:skip=CKV2_AWS_40: Bastion host requires public IP for SSH access
   image_id      = data.aws_ami.amazon.image_id
   instance_type = var.instance_type
 
