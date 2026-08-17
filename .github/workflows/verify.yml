@@ -6,10 +6,15 @@ on:
     branches:
       - main
 
+concurrency:
+  group: gha_workflow.verify.yml-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   id-token: write
   contents: write
 
 jobs:
+  # holden:ignore:HLD_CI_017 Internal shared workflow (JamesWoolfenden/.github); tracking @main deliberately so it picks up updates automatically.
   verify:
     uses: JamesWoolfenden/.github/.github/workflows/terraform-verify.yml@main

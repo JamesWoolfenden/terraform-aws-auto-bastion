@@ -1,0 +1,153 @@
+{
+  "findings": [
+    {
+      "confidence": "high",
+      "explanation": "This module's entire premise (README: \"add your users to the ssh users group\") is that group membership grants access to the bastion. But the inline policy's Resource is `arn:aws:ec2:${var.region}:${var.account_id}:instance/*` \u2014 a wildcard scoped only by region and account, matching every EC2 instance in the account, not the bastion specifically. A deterministic rule can't catch this: HLD_AWS_222 (no-wildcard-resource) only matches a literal `\"*\"` element, and `instance/*` is a syntactically valid, non-wildcard-literal ARN string that requires knowing AWS ARN semantics to recognise as \"all instances.\" Any member of the ssh group (or anyone who compromises one) can use ec2-instance-connect:SendSSHPublicKey to push a key onto any other instance in the account running an `ec2-user` OS account \u2014 turning a bastion-scoped access group into an account-wide lateral SSH path.",
+      "file": "aws_iam_group.ssh.tf",
+      "first_seen": "2026-07-17",
+      "fixable": false,
+      "id": "HOLDEN_AI_001",
+      "last_seen": "2026-07-17",
+      "line": 21,
+      "outcome": "fixed",
+      "principle": "identity-and-access",
+      "related_resources": [
+        "aws_iam_group.ssh",
+        "aws_iam_group_membership.ssh",
+        "aws_autoscaling_group.bastion"
+      ],
+      "remediation": "Scope the Resource/Condition to only the bastion's instances. The ASG now tags launched instances with `Name = var.name` (see aws_autoscaling_group.bastion.tf), so add a Condition such as `\"ec2:ResourceTag/Name\": var.name` to the statement, or narrow Resource beyond `instance/*` if a fixed set of instance ARNs is acceptable. Verify EC2 Instance Connect actually honours the `aws:ResourceTag` condition key for this action before relying on it.",
+      "resolution_note": "Resource stays instance/* (ASG instance IDs are dynamic, unknowable at policy-authoring time), but added `\"aws:ResourceTag/Name\": \"${var.name}\"` to the existing Condition StringEquals block in aws_iam_group.ssh.tf. Only instances tagged Name = var.name (i.e. the bastion's own ASG-launched instances) satisfy the condition, so SendSSHPublicKey no longer reaches arbitrary account instances.",
+      "resource": "aws_iam_group_policy.ssh_policy",
+      "severity": "HIGH",
+      "status": "fixed",
+      "suppression_reason": null,
+      "title": "\"ssh\" IAM group can push SSH keys to every EC2 instance in the account, not just the bastion"
+    },
+    {
+      "confidence": "medium",
+      "explanation": "The role is used purely as an EC2 instance profile: the SSM agent running on the instance authenticates via the instance profile automatically (through IMDS), and the only policy attached (var.ssm_standard_role, default AmazonEC2RoleforSSM) is the standard instance-role policy. Trusting `ssm.amazonaws.com` to independently call sts:AssumeRole on this role is only needed for specific SSM features (e.g. cross-account Automation or hybrid activations) that this module does not use. This is a judgment call the engine can't make \u2014 it would need to know that the attached policy is the standard agent policy and infer the trust relationship is broader than that use case requires.",
+      "file": "data.iam_policy_document.tf",
+      "first_seen": "2026-07-17",
+      "fixable": false,
+      "id": "HOLDEN_AI_002",
+      "last_seen": "2026-07-17",
+      "line": 13,
+      "outcome": "fixed",
+      "principle": "identity-and-access",
+      "related_resources": [
+        "aws_iam_role_policy_attachment.ssm_standard"
+      ],
+      "remediation": "If no SSM feature in this account depends on the service assuming this specific role, drop `ssm.amazonaws.com` from the assume-role principals in data.iam_policy_document.tf and keep only `ec2.amazonaws.com`.",
+      "resolution_note": "Dropped ssm.amazonaws.com from the principals block in data.iam_policy_document.tf, leaving only ec2.amazonaws.com, matching AWS's documented trust policy for an SSM-managed EC2 instance profile role. Left a comment explaining why and noting the CloudTrail/Access-Analyzer check to re-verify if a future SSM feature needs it back.",
+      "resource": "aws_iam_role.ssm_role",
+      "severity": "MEDIUM",
+      "status": "fixed",
+      "suppression_reason": null,
+      "title": "IAM role trust policy allows ssm.amazonaws.com to assume the role directly, which standard SSM agent operation does not require"
+    },
+    {
+      "confidence": "high",
+      "explanation": "AWS deprecated AmazonEC2RoleforSSM in favour of AmazonSSMManagedInstanceCore, a narrower, purpose-built policy for the SSM agent; AWS's own guidance is to not use the legacy policy for new roles. Because this is the variable's *default*, every consumer of this module who doesn't override ssm_standard_role gets the broader, deprecated policy attached to their bastion's instance role without realising it. No deterministic rule flags this (holden has no policy covering deprecated managed-policy ARNs generically) \u2014 see suggested_policies.",
+      "file": "variables.tf",
+      "first_seen": "2026-07-17",
+      "fix": "default     = \"arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore\"",
+      "fixable": true,
+      "id": "HOLDEN_AI_003",
+      "last_seen": "2026-07-17",
+      "line": 25,
+      "principle": "identity-and-access",
+      "related_resources": [
+        "aws_iam_role_policy_attachment.ssm_standard"
+      ],
+      "remediation": "Change the default to \"arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore\".",
+      "resource": "var.ssm_standard_role",
+      "severity": "MEDIUM",
+      "status": "fixed",
+      "suppression_reason": null,
+      "title": "Default ssm_standard_role points at AWS's deprecated AmazonEC2RoleforSSM managed policy instead of AmazonSSMManagedInstanceCore"
+    },
+    {
+      "confidence": "high",
+      "explanation": "data.http.myip fetches `http://ipv4.icanhazip.com` (plain HTTP, unauthenticated). Its response_body is chomped, suffixed with /32, and passed straight through as the module's `allowed_ips` \u2014 which becomes the *only* CIDR permitted to reach the bastion's SSH ingress rule (aws_security_group.instance_ssh_access.tf). An on-path attacker (rogue AP, compromised proxy/DNS) can return an arbitrary IP in that plain-HTTP response, which gets baked into the security group as the trusted SSH source instead of the real caller's IP. This requires tracing a value across three files (data source \u2192 module call \u2192 security group consumer) that the deterministic engine's two-hop graph checks don't cover.",
+      "file": "example/examplea/data.network.tf",
+      "first_seen": "2026-07-17",
+      "fix": "data \"http\" \"myip\" {\n  url = \"https://ipv4.icanhazip.com\"\n}",
+      "fixable": true,
+      "id": "HOLDEN_AI_004",
+      "last_seen": "2026-07-17",
+      "line": 10,
+      "principle": "network-security",
+      "related_resources": [
+        "example/examplea/module.bastion.tf:4 (allowed_ips)",
+        "aws_security_group.instance_ssh_access"
+      ],
+      "remediation": "Use `https://ipv4.icanhazip.com` (TLS-verified) instead of the http:// URL.",
+      "resource": "data.http.myip",
+      "severity": "MEDIUM",
+      "status": "fixed",
+      "suppression_reason": null,
+      "title": "Example fetches the caller's IP over plain HTTP and feeds it directly into the bastion's sole allowed SSH ingress CIDR"
+    },
+    {
+      "confidence": "high",
+      "explanation": "The caller's workflow-level `permissions:` forms the ceiling for every job inside a called reusable workflow (jobs.<id>.uses:). This is cross-repo composition the deterministic engine has no way to see: I fetched JamesWoolfenden/.github/.github/workflows/terraform-pr.yml directly and it defines three jobs (discover, terraform, security) whose steps are limited to checkout, opentofu setup/init/validate, python setup, and pre-commit \u2014 none call the GitHub API to comment on, review, label, or otherwise write to a pull request. This is confirmed empirically, not just by reading the YAML: the last 5 runs of this workflow (e.g. run 25332376226) show exactly those steps executing and nothing PR-write-shaped. `pull-requests: write` is granted to all three jobs but exercised by none of them, so a compromised or newly-added step in any of those jobs would inherit write access to PRs it has no legitimate reason to need.",
+      "file": ".github/workflows/pull_request.yml",
+      "first_seen": "2026-07-17",
+      "fix": "permissions:\n  contents: read",
+      "fixable": true,
+      "id": "HOLDEN_AI_005",
+      "last_seen": "2026-07-17",
+      "line": 13,
+      "principle": "identity-and-access",
+      "related_resources": [
+        "gha_job.pull_request.yml.pr"
+      ],
+      "remediation": "Drop `pull-requests: write` from pull_request.yml's top-level permissions, leaving only `contents: read`. If a future step in the reusable workflow needs to post PR comments, re-add it there deliberately.",
+      "resource": "gha_workflow.pull_request.yml",
+      "severity": "MEDIUM",
+      "status": "fixed",
+      "suppression_reason": null,
+      "title": "pull_request.yml grants pull-requests: write, but the reusable workflow it calls never uses it"
+    },
+    {
+      "confidence": "medium",
+      "explanation": "Fetching JamesWoolfenden/.github/.github/workflows/terraform-verify.yml directly shows four jobs: discover (lists directories, no cloud/write need), terraform (correctly scopes its own `permissions: id-token: write, contents: read` for AWS OIDC auth), security (runs pre-commit, no cloud/write need), and version (correctly scopes `permissions: contents: write` to push a tag). Because discover and security declare no job-level permissions block of their own, they inherit the full caller ceiling (id-token: write, contents: write) from this repo's verify.yml, over-privileging two jobs that only need read access to the checked-out code.",
+      "file": ".github/workflows/verify.yml",
+      "first_seen": "2026-07-17",
+      "fixable": false,
+      "id": "HOLDEN_AI_006",
+      "last_seen": "2026-07-17",
+      "line": 13,
+      "principle": "identity-and-access",
+      "related_resources": [
+        "gha_job.verify.yml.verify"
+      ],
+      "remediation": "This can't be fixed from this repo alone \u2014 the caller's ceiling is already the minimum needed to cover the terraform and version jobs. The actual fix is in JamesWoolfenden/.github: add explicit `permissions: contents: read` (or an empty `permissions: {}`) to the discover and security jobs in terraform-verify.yml so they don't inherit more than they use, regardless of what any individual caller grants.",
+      "resource": "gha_workflow.verify.yml",
+      "severity": "LOW",
+      "status": "open",
+      "suppression_reason": null,
+      "title": "verify.yml's id-token/contents:write ceiling is inherited by the reusable workflow's discover and security jobs, which don't need either"
+    }
+  ],
+  "scan_date": "2026-07-17T00:00:00Z",
+  "scan_path": ".",
+  "suggested_policies": [
+    {
+      "rationale": "AmazonEC2RoleforSSM is a well-documented AWS deprecation with a specific, unambiguous replacement (AmazonSSMManagedInstanceCore). Any Terraform attaching this exact managed-policy ARN via aws_iam_role_policy_attachment (or the aws_iam_role.managed_policy_arns list) is over-provisioning relative to current AWS guidance, regardless of the surrounding module. coverage_by_type[aws_iam_role_policy_attachment] only has HLD_AWS_181 (AdministratorAccess) and HLD_AWS_237 (IAMFullAccess) \u2014 no existing policy covers this ARN. Verified: fires correctly on aws_iam_role_policy_attachment.ssm_standard in this repo and nowhere else.",
+      "yaml": "id: HLD_PROPOSED_001\nname: IAM role policy attachments must not use the deprecated AmazonEC2RoleforSSM managed policy\nprinciple: identity-and-access\nseverity: MEDIUM\nrationale: |\n  AWS deprecated the AmazonEC2RoleforSSM managed policy in favor of\n  AmazonSSMManagedInstanceCore, which grants a narrower, purpose-built\n  permission set for the SSM agent. AmazonEC2RoleforSSM bundles broader,\n  now-unnecessary permissions that were split out of the core policy.\n  Continuing to attach the legacy policy over-provisions the instance role\n  relative to what the SSM agent actually requires today.\nremediation: |\n  Attach arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore instead:\n\n    resource \"aws_iam_role_policy_attachment\" \"ssm\" {\n      role       = aws_iam_role.example.name\n      policy_arn = \"arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore\"\n    }\nresources:\n  aws_iam_role_policy_attachment:\n    path: policy_arn\n    not_equals: \"arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM\"\n"
+    },
+    {
+      "rationale": "data.http with a non-https URL is a concrete, single-attribute, broadly-applicable check \u2014 any Terraform using the http provider's data source is subject to it, independent of how the response is later used. coverage_by_type[data.http] is empty (zero existing policies). Verified: fires correctly on data.http.myip in example/examplea and nowhere else in the repo.",
+      "yaml": "id: HLD_PROPOSED_002\nname: data.http data sources must use an https:// URL\nprinciple: encryption\nseverity: MEDIUM\nrationale: |\n  A data \"http\" source fetching over a plain http:// URL has no transport\n  integrity or confidentiality guarantee. Any on-path attacker can alter the\n  response body, and Terraform configurations frequently feed that response\n  directly into security-relevant values (allowlisted CIDRs, endpoint URLs,\n  bootstrap scripts) without further validation, silently trusting whatever\n  the attacker returns.\nremediation: |\n  Use an https:// URL instead:\n\n    data \"http\" \"example\" {\n      url = \"https://example.com\"\n    }\nresources:\n  data.http:\n    path: url\n    matches: \"^https://\"\n"
+    },
+    {
+      "dsl_extension_note": "Need a per-element regex operator for list-valued string attributes, e.g. `list_any_matches: <regex>` (pass when at least one element of the list at `path` matches the Go regex) as a sibling to the existing `contains` (exact membership) and `matches` (whole-string) operators. Evaluator shape: new case in the same dispatch switch as `matches`/`contains` in internal/policy/evaluator.go, resolving `path` to a []string then regexp.MatchString per element.",
+      "rationale": "IAM statements granting ec2-instance-connect:SendSSHPublicKey with a Resource ending in instance/* (rather than specific instance ARNs or a tag-scoped Condition) is a recurring, real-world Instance Connect misconfiguration \u2014 not specific to this account or org. coverage_by_type[data.aws_iam_policy_document] is empty, and HLD_AWS_222 (no-wildcard-resource) only matches a literal \"*\" element, not a suffix pattern like instance/*, so it does not overlap. Expressing this precisely requires evaluating each element of a list-valued attribute (resources) against a regex, which the current DSL's contains (exact-value membership) and matches (whole-string) operators don't support together in one condition.",
+      "requires_dsl_extension": true,
+      "yaml": "id: HLD_PROPOSED_003\nname: IAM policy statements should not grant ec2-instance-connect:SendSSHPublicKey on all instances via a instance/* resource pattern\nprinciple: identity-and-access\nseverity: HIGH\nrationale: |\n  A statement granting ec2-instance-connect:SendSSHPublicKey with a resource\n  ending in instance/* (with no more specific instance ARN and no\n  aws:ResourceTag condition scoping which instances) lets any principal with\n  this permission push an SSH public key onto every EC2 instance in the\n  account/region that has the matching OS user, not just the intended target.\n  This converts what looks like scoped bastion access into account-wide\n  lateral SSH reach.\nremediation: |\n  Scope the resource to specific instance ARNs, or add a Condition such as\n  aws:ResourceTag/<tag-key> restricting which instances the key can be sent\n  to:\n\n    condition {\n      test     = \"StringEquals\"\n      variable = \"aws:ResourceTag/Name\"\n      values   = [\"my-bastion\"]\n    }\nresources:\n  data.aws_iam_policy_document:\n    path: statement\n    not_any:\n      all:\n        - path: actions\n          contains: \"ec2-instance-connect:SendSSHPublicKey\"\n        - path: resources\n          list_any_matches: \"instance/\\\\*$\"\n"
+    }
+  ],
+  "suggested_suppressions": []
+}

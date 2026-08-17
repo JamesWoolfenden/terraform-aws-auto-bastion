@@ -1,0 +1,85 @@
+{
+  "findings": [
+    {
+      "confidence": "high",
+      "explanation": "The /dev/sdb block_device_mapping sets volume_type = \"standard\" (magnetic), a previous-generation EBS type with unpredictable, low IOPS (best-effort, ~40-200 IOPS) and no burst/baseline performance guarantee. gp3 offers a 3,000 IOPS / 125 MB/s baseline at a flat, predictable price with no per-request I/O charges, and is the current AWS-recommended default for general-purpose volumes.",
+      "file": "aws_launch_template.bastion.tf",
+      "first_seen": "2026-07-17",
+      "fix": "block_device_mappings {\n  device_name = \"/dev/sdb\"\n  ebs {\n    encrypted   = true\n    volume_size = 80\n    volume_type = \"gp3\"\n  }\n}",
+      "fixable": true,
+      "id": "HOLDEN_BP_001",
+      "last_seen": "2026-07-17",
+      "line": 22,
+      "principle": "cost",
+      "remediation": "Change volume_type to \"gp3\" for the /dev/sdb mapping (and consider adding explicit iops/throughput if the bastion workload needs more than baseline).",
+      "resource": "aws_launch_template.bastion",
+      "severity": "LOW",
+      "status": "open",
+      "title": "Launch template uses legacy magnetic (standard) EBS volume for secondary disk"
+    },
+    {
+      "confidence": "high",
+      "explanation": "var.common_tags was only wired into aws_security_group.instance_ssh_access (aws_security_group.instance_ssh_access.tf:25). The ASG had no `tag` blocks. Note: provider-level default_tags (set by callers, e.g. example/examplea/provider.aws.tf) does NOT cover aws_autoscaling_group, since it uses a custom `tag` block implementation rather than a plain `tags` map -- so this couldn't be solved at the provider level and needed a module-level fix.",
+      "file": "aws_autoscaling_group.bastion.tf",
+      "first_seen": "2026-07-17",
+      "fix": "data \"aws_default_tags\" \"current\" {}\n\ndynamic \"tag\" {\n  for_each = merge(data.aws_default_tags.current.tags, { Name = var.name })\n  content {\n    key                 = tag.key\n    value               = tag.value\n    propagate_at_launch = true\n  }\n}",
+      "fixable": true,
+      "id": "HOLDEN_BP_002",
+      "last_seen": "2026-07-17",
+      "line": 1,
+      "outcome": "fixed",
+      "principle": "cost",
+      "remediation": "Propagate tags to the ASG via a dynamic `tag` block with propagate_at_launch = true, so launched instances inherit them.",
+      "resolution_note": "var.common_tags was removed from the module entirely (module now relies on caller-configured provider default_tags). Since default_tags does not propagate to aws_autoscaling_group's custom tag block, the gap is bridged with a data \"aws_default_tags\" lookup merged with var.name for the instance Name tag.",
+      "resource": "aws_autoscaling_group.bastion",
+      "severity": "LOW",
+      "status": "fixed",
+      "title": "var.common_tags is declared but never applied to the compute resources it names"
+    },
+    {
+      "confidence": "high",
+      "explanation": "most_recent = true combined with a wildcarded name filter (\"amzn2-ami-hvm-*-x86_64-ebs\") means the resolved image_id can change on any future `terraform plan/apply` whenever Amazon publishes a new AMI in that family -- with no code change and no review. Because the launch template has create_before_destroy = true, this can trigger an unreviewed, unplanned instance replacement of the bastion.",
+      "file": "data.aws_ami.amazon.tf",
+      "first_seen": "2026-07-17",
+      "fixable": false,
+      "id": "HOLDEN_BP_003",
+      "last_seen": "2026-07-17",
+      "line": 2,
+      "principle": "repeatability",
+      "remediation": "Pin the AMI: expose it as an input variable with a default AMI ID, or pin via an SSM parameter data source read at a known version, so the image only changes on an explicit, reviewable update.",
+      "resource": "data.aws_ami.amazon",
+      "severity": "LOW",
+      "status": "open",
+      "title": "AMI lookup is unpinned (most_recent + wildcard name filter), so repeated applies can silently select a different image"
+    },
+    {
+      "confidence": "medium",
+      "explanation": "Unlike example/examplea/terraform.tf, the root module ships no terraform{} block at all, so there is no required_version and no required_providers constraint on the aws provider it depends on. Consumers can pull this module in with an incompatible Terraform or AWS provider version with no upfront error -- failures surface late, as plan/apply errors instead.",
+      "file": "variables.tf",
+      "first_seen": "2026-07-17",
+      "fix": "terraform {\n  required_providers {\n    aws = {\n      source  = \"hashicorp/aws\"\n      version = \">= 6.0, < 7.0\"\n    }\n  }\n  required_version = \">= 1.5.0\"\n}",
+      "fixable": true,
+      "id": "HOLDEN_BP_004",
+      "last_seen": "2026-07-17",
+      "line": 1,
+      "principle": "repeatability",
+      "remediation": "Add a terraform.tf with a required_providers block constraining the aws provider (e.g. version = \">= 6.0, < 7.0\") and a required_version for Terraform itself, mirroring example/examplea/terraform.tf.",
+      "resource": "module root",
+      "severity": "LOW",
+      "status": "open",
+      "title": "Root module has no terraform{} / required_providers block"
+    }
+  ],
+  "scan_date": "2026-07-17T00:00:00Z",
+  "scan_path": ".",
+  "suggested_policies": [
+    {
+      "rationale": "aws_launch_template / aws_launch_configuration block_device_mappings using volume_type = \"standard\" is unambiguous and always a downgrade versus gp3 -- there is no scenario where magnetic is the right default for a new template. This fires deterministically on any Terraform declaring the attribute.",
+      "yaml": "id: HLD_AWS_262\nname: Launch template EBS volumes should not use legacy magnetic (standard) type\nprinciple: cost\nseverity: LOW\nrationale: |\n  volume_type = \"standard\" is the previous-generation magnetic EBS type with\n  best-effort, unpredictable IOPS and per-I/O pricing. gp3 provides a flat-rate\n  baseline of 3,000 IOPS / 125 MB/s at a comparable or lower price and is the\n  AWS-recommended default for general-purpose workloads.\nremediation: |\n  Set volume_type = \"gp3\" (or \"gp2\"/\"io1\"/\"io2\" if higher performance is\n  required) instead of \"standard\".\nresources:\n  aws_launch_template:\n    path: block_device_mappings.ebs.volume_type\n    not_equals: standard\n"
+    },
+    {
+      "rationale": "data.aws_ami with most_recent = true and a wildcarded name filter is a well-known repeatability trap: the resolved AMI silently changes between applies whenever a new image is published upstream. This is a structural pattern (specific data source + specific attribute combination) that fires deterministically regardless of the surrounding module.",
+      "yaml": "id: HLD_TF_077\nname: aws_ami data source should not combine most_recent with a wildcarded name filter\nprinciple: repeatability\nseverity: LOW\nrationale: |\n  most_recent = true paired with a filter.name value containing \"*\" means the\n  resolved AMI can change on any future plan/apply with no code change, causing\n  unplanned instance replacement in downstream resources that reference\n  image_id. Pinning to an explicit AMI ID or a versioned SSM parameter makes\n  image updates an explicit, reviewable action instead of implicit drift.\nremediation: |\n  Pin the AMI explicitly: expose the AMI ID as an input variable with a\n  reviewed default, or resolve it via an SSM parameter data source pinned to a\n  known parameter version, rather than resolving most_recent against a\n  wildcarded name pattern.\nresources:\n  data.aws_ami:\n    path: most_recent\n    equals: false\n"
+    }
+  ]
+}

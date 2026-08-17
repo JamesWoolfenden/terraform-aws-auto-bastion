@@ -1,6 +1,5 @@
 resource "aws_launch_template" "bastion" {
-  # checkov:skip=CKV2_AWS_40: Bastion host requires public IP for SSH access
-  # checkov:skip=CKV_AWS_88: Bastion host requires public IP for SSH access
+  # holden:ignore:HLD_AWS_018 Bastion host requires a public IP for direct SSH ingress; there is no NAT/proxy layer in front of it by design.
 
   image_id      = data.aws_ami.amazon.image_id
   instance_type = var.instance_type
@@ -19,7 +18,7 @@ resource "aws_launch_template" "bastion" {
     ebs {
       encrypted   = true
       volume_size = 80
-      volume_type = "standard"
+      volume_type = "gp3"
     }
   }
 
@@ -31,8 +30,9 @@ resource "aws_launch_template" "bastion" {
   }
 
   metadata_options {
-    http_endpoint = "enabled"
-    http_tokens   = "required"
+    http_endpoint               = "enabled"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 1
   }
 
   lifecycle {

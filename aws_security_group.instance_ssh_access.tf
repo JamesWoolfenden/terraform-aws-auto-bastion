@@ -1,6 +1,6 @@
 # Instance Security group
+# holden:ignore:HLD_AWS_092 Bastion needs unrestricted egress for the SSM agent and OS package updates; there is no fixed set of destination CIDRs to scope this to.
 resource "aws_security_group" "instance_ssh_access" {
-  # checkov:skip=CKV_AWS_382: Bastion host requires unrestricted outbound access for SSM agent and OS package updates
   description = "Allow SSH to instance with ssm agent"
   vpc_id      = var.vpc_id
 
@@ -22,5 +22,4 @@ resource "aws_security_group" "instance_ssh_access" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = var.common_tags
 }

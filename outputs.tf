@@ -1,3 +1,4 @@
 output "bastion" {
-  value = aws_launch_template.bastion
+  description = "The bastion launch template"
+  value       = aws_launch_template.bastion
 }

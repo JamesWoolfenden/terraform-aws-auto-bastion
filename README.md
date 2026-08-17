@@ -5,7 +5,6 @@
 [![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/JamesWoolfenden/terraform-aws-aurora.svg?label=latest)](https://github.com/JamesWoolfenden/terraform-aws-aurora/releases/latest)
 ![Terraform Version](https://img.shields.io/badge/tf-%3E%3D0.14.0-blue.svg)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
-[![checkov](https://img.shields.io/badge/checkov-verified-brightgreen)](https://www.checkov.io/)
 
 Terraform module to create a Bastion
 
@@ -39,7 +38,6 @@ module "auto-bastion" {
   source            = "JamesWoolfenden/auto-bastion/aws"
   version           = "0.2.0"
   allowed_ips       = ["${chomp(data.http.myip.body)}/32"]
-  common_tags       = var.common_tags
   vpc_id            = element(data.aws_vpcs.vpc.ids, 0)
   instance_type     = var.instance_type
   ssm_standard_role = var.ssm_standard_role
@@ -47,6 +45,8 @@ module "auto-bastion" {
   name              = var.name
 }
 ```
+
+Tags are applied via the calling provider's `default_tags`, not a module variable — configure `default_tags` on your `provider "aws"` block to tag resources created by this module.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
@@ -77,6 +77,7 @@ No modules.
 | [aws_launch_template.bastion](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/launch_template) | resource |
 | [aws_security_group.instance_ssh_access](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_ami.amazon](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
+| [aws_default_tags.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/default_tags) | data source |
 | [aws_iam_policy_document.assume](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs
@@ -85,14 +86,13 @@ No modules.
 | ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_account_id"></a> [account\_id](#input\_account\_id) | The AWS account of the instances to connect to:(optional) | `string` | n/a | yes |
 | <a name="input_allowed_ips"></a> [allowed\_ips](#input\_allowed\_ips) | Allow this list of IPs through the firewall | `list(any)` | n/a | yes |
-| <a name="input_asg"></a> [asg](#input\_asg) | All the Settings of an Auto Scaling Group | `map` | <pre>{<br/>  "max_size": 1,<br/>  "min_size": 1,<br/>  "name": "terraform-asg-bastion"<br/>}</pre> | no |
-| <a name="input_common_tags"></a> [common\_tags](#input\_common\_tags) | Implements the common tags scheme | `map(any)` | n/a | yes |
+| <a name="input_asg"></a> [asg](#input\_asg) | All the Settings of an Auto Scaling Group | <pre>object({<br/>    min_size = number<br/>    max_size = number<br/>    name     = string<br/>  })</pre> | <pre>{<br/>  "max_size": 1,<br/>  "min_size": 1,<br/>  "name": "terraform-asg-bastion"<br/>}</pre> | no |
 | <a name="input_enablesshgroup"></a> [enablesshgroup](#input\_enablesshgroup) | Switch to enable ssh group | `number` | `1` | no |
 | <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | The EC2 instance type | `string` | `"t2.micro"` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name of the ec2 instance | `string` | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | The AWS region | `string` | `"eu-west-1"` | no |
 | <a name="input_ssh_name"></a> [ssh\_name](#input\_ssh\_name) | The name of the SSH group objects | `string` | `"ssh"` | no |
-| <a name="input_ssm_standard_role"></a> [ssm\_standard\_role](#input\_ssm\_standard\_role) | The IAM role to add to the instance profile, the default enables SSM | `string` | `"arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"` | no |
+| <a name="input_ssm_standard_role"></a> [ssm\_standard\_role](#input\_ssm\_standard\_role) | The IAM role to add to the instance profile, the default enables SSM | `string` | `"arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"` | no |
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | A list of Subnet IDs | `list(any)` | n/a | yes |
 | <a name="input_users"></a> [users](#input\_users) | List of users to add the ssh users group, (optional) | `list(any)` | <pre>[<br/>  "jameswoolfenden"<br/>]</pre> | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | The ID of the VPC being used | `string` | n/a | yes |
@@ -101,7 +101,7 @@ No modules.
 
 | Name | Description |
 | ---- | ----------- |
-| <a name="output_bastion"></a> [bastion](#output\_bastion) | n/a |
+| <a name="output_bastion"></a> [bastion](#output\_bastion) | The bastion launch template |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Policy
@@ -110,6 +110,7 @@ No modules.
 The Terraform resource required is:
 
 ```golang
+# apply role — full permissions for terraform apply
 resource "aws_iam_policy" "terraform_pike" {
   name_prefix = "terraform_pike"
   path        = "/"
@@ -123,7 +124,9 @@ resource "aws_iam_policy" "terraform_pike" {
             "Effect": "Allow",
             "Action": [
                 "autoscaling:CreateAutoScalingGroup",
+                "autoscaling:CreateOrUpdateTags",
                 "autoscaling:DeleteAutoScalingGroup",
+                "autoscaling:DeleteTags",
                 "autoscaling:Describe*",
                 "autoscaling:DescribeAutoScalingGroups",
                 "autoscaling:DescribeScalingActivities",
@@ -142,10 +145,8 @@ resource "aws_iam_policy" "terraform_pike" {
                 "ec2:CreateLaunchTemplate",
                 "ec2:CreateLaunchTemplateVersion",
                 "ec2:CreateSecurityGroup",
-                "ec2:CreateTags",
                 "ec2:DeleteLaunchTemplate",
                 "ec2:DeleteSecurityGroup",
-                "ec2:DeleteTags",
                 "ec2:Describe*",
                 "ec2:DescribeAccountAttributes",
                 "ec2:DescribeImages",
@@ -213,6 +214,29 @@ resource "aws_iam_policy" "terraform_pike" {
             "Effect": "Allow",
             "Action": [
                 "ssm:Get*"
+            ],
+            "Resource": [
+                "*"
+            ]
+        }
+    ]
+})
+}
+
+# plan role — read-only permissions for terraform plan
+resource "aws_iam_policy" "terraform_pike_plan" {
+  name_prefix = "terraform_pike_plan"
+  path        = "/"
+  description = "Pike Autogenerated policy from IAC"
+
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "autoscaling:Describe*"
             ],
             "Resource": [
                 "*"

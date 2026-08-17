@@ -1,16 +1,16 @@
 data "aws_iam_policy_document" "assume" {
-  # checkov:skip=CKV_AWS_356: IAM policy requires broad access for this module to function
-  # checkov:skip=CKV_AWS_290: IAM policy requires broad write access for this module to function
-  # checkov:skip=CKV_AWS_355: IAM policy requires wildcard resource for this module to function
   statement {
     effect = "Allow"
 
     principals {
       type = "Service"
 
+      # ssm.amazonaws.com deliberately omitted: this role is only used as the EC2 instance
+      # profile role, and the SSM agent gets its credentials via that profile (through IMDS),
+      # not by SSM independently calling sts:AssumeRole. Only add it back for a documented
+      # use case (e.g. an Automation assume role) that actually needs it.
       identifiers = [
         "ec2.amazonaws.com",
-        "ssm.amazonaws.com",
       ]
     }
 

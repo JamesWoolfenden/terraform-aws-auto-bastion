@@ -4,9 +4,14 @@ on:
   pull_request:
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
 jobs:
+  # holden:ignore:HLD_CI_017 Internal shared workflow (JamesWoolfenden/.github); tracking @HEAD deliberately so it picks up updates automatically.
   pr:
-    uses: JamesWoolfenden/.github/.github/workflows/terraform-pr.yml@main
+    uses: JamesWoolfenden/.github/.github/workflows/terraform-pr.yml@HEAD
